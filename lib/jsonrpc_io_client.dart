@@ -14,7 +14,7 @@ import "client_base.dart";
  *    Future request = proxy.call("someServerMethod", [arg1, arg2 ]);
  *    request.then((value){doSomethingWithValue(value);});
  *
- * Each arg must be representable in JSON.
+ * Each arg must be representable in json.
  *
  * Exceptions on the remote end will throw RpcException.
  *
@@ -25,15 +25,15 @@ class ServerProxy extends ServerProxyBase {
   ServerProxy(String url, [this.persistentConnection = true]) : super(url);
 
   dynamic executeRequest(dynamic package) async {
-    //return a future with the JSON-RPC response
+    //return a future with the json-RPC response
     HttpClient conn = new HttpClient();
 
     String payload;
     try {
-      payload = JSON.encode(package);
+      payload = json.encode(package);
     } catch (e) {
       throw new UnsupportedError(
-          'Item ($package) could not be serialized to JSON');
+          'Item ($package) could not be serialized to json');
     }
     HttpClientRequest request = await conn.postUrl(Uri.parse(url));
     request.headers.add('Content-Type', 'application/json; charset=UTF-8');
@@ -47,13 +47,13 @@ class ServerProxy extends ServerProxyBase {
     String jsonContent = '';
     Completer c = new Completer();
 
-    response.transform(UTF8.decoder).listen((dynamic contents) {
+    response.transform(utf8.decoder).listen((dynamic contents) {
       jsonContent += contents.toString();
     }, onDone: () {
       if (response.statusCode == 204 || jsonContent.isEmpty) {
         c.complete(null);
       } else if (response.statusCode == 200) {
-        c.complete(JSON.decode(jsonContent));
+        c.complete(json.decode(jsonContent));
       } else {
         c.completeError(
             new TransportStatusError(response.statusCode, response, package));

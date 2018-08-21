@@ -1,10 +1,10 @@
 jsonrpc2
 ========
 
-JSON-RPC is a simple protocol for calling methods on a server and (usually)
+json-RPC is a simple protocol for calling methods on a server and (usually)
 getting a response back. The specification is at [http://jsonrpc.org](http://jsonrpc.org).
 
-This package implements the [JSON-RPC 2.0 specification](http://www.jsonrpc.org/specification),
+This package implements the [json-RPC 2.0 specification](http://www.jsonrpc.org/specification),
 with failover to 1.0 in the server implementation.
  
 Client Basics
@@ -32,7 +32,7 @@ Client Basics
 Server Basics
 -------------
 
-This server library does not know anything about transport; it only associates the JSON-RPC request with an instance
+This server library does not know anything about transport; it only associates the json-RPC request with an instance
 that implements the remote methods, and returns a result. Network and transport issues are outside the scope of this
 implementation. That said, using the library should be fairly easy with the transport or framework you are using.
 
@@ -48,9 +48,9 @@ implementation. That said, using the library should be fairly easy with the tran
 
   
   1. Decode the request payload to String from (UTF-8) character set.
-  2. Parse the JSON from the String.
+  2. Parse the json from the String.
   3. Using the *jsonRpcExec* method, dispatch the request to an instance of the service class.
-  4. Stringify the (usually, a JSONable object) response.
+  4. Stringify the (usually, a jsonable object) response.
   5. Usually, return the response (in UTF-8).
 
 
@@ -83,7 +83,7 @@ or, for a web client in a "console" script (using dart:io),
 
 On a web server somewhere out there, there is a url that has the methods you need.
 
-To use JSON-RPC with that server, create a proxy to that server at that url.
+To use json-RPC with that server, create a proxy to that server at that url.
    
         proxy = new ServerProxy('http://example.com/some_endpoint');
 
@@ -113,10 +113,10 @@ to the call is required by protocol to be a List or Map, and will be enclosed in
 a List in the background if only a single argument is provided. Note that if the server's method has 
 a single List argument, you need to use something like 4. 1 is usable if the 
 method requires no arguments, or if all arguments are optional. Variables need to 
-be JSON serializable; in general, booleans, strings, numbers, Lists, Maps, 
+be json serializable; in general, booleans, strings, numbers, Lists, Maps, 
 combinations of these, or objects with a toJson() method. A call will generally
-return a single thing decoded from JSON like a null, string, number, List, or Map.
-The JSON-RPC 2.0 specification does not support a combination of positional and
+return a single thing decoded from json like a null, string, number, List, or Map.
+The json-RPC 2.0 specification does not support a combination of positional and
 named arguments, though it may be possible by extension to the specification (and 
 deliberately not implemented here yet). 
 
@@ -130,7 +130,7 @@ call uses asynchronous methodology and will look like
 
 `proxy.checkError(value)` just throws the returned exception in a place where you
 can handle it with .catchError. If you want to do something else, the returned
-error will be the JSON-RPC "error" member defined in the JSON-RPC specification.  
+error will be the json-RPC "error" member defined in the json-RPC specification.  
 
 If you do not want or need the return value (The default return is null in most 
 languages), you may send a notification.
@@ -141,7 +141,7 @@ Error-handling on notifications is, well, fraught. Use notifications if you real
 really don't care. It'll usually get there, but don't expect to get much feedback
 when something fails.
         
-JSON-RPC 2.0 supports a "batch" technique. For this, use BatchServerProxy
+json-RPC 2.0 supports a "batch" technique. For this, use BatchServerProxy
 
         proxy = new BatchServerProxy(url); 
         proxy.call('some_method').then(something_with_this_value...
@@ -164,25 +164,25 @@ Server Implementation Details
 
 For server side application, the API has two alternative functions, `jsonRpc` and `jsonRpcExec`. 
 
-jsonRpc takes a String JSON-RPC request and an instance object, and ultimately returns a String or null.   
+jsonRpc takes a String json-RPC request and an instance object, and ultimately returns a String or null.   
 
         Future jsonRpc(String request, Object service) 
 
-jsonRpcExec takes a decoded JSON-RPC request (List or Map) and an instance object, and ultimately returns a List or Map or Notification Object.
+jsonRpcExec takes a decoded json-RPC request (List or Map) and an instance object, and ultimately returns a List or Map or Notification Object.
 
         Future jsonRpcExec(Object request, Object service)
         
 The choice of whether to use jsonRpc or jsonRpcExec depends on the server framework being used. Sometimes, it is easier to obtain the String
-representation of the JSON-RPC request, and sometimes, it may be easier to obtain the JSON-RPC request as a parsed JSON object. This JSON-RPC
+representation of the json-RPC request, and sometimes, it may be easier to obtain the json-RPC request as a parsed json object. This json-RPC
 server implementation is not opinionated about frameworks, or even transports. This implementation should work the same for transports other than
 HTTP. 
 
 **NOTE:** If the jsonRpc method returns null, or if the jsonRpcExec method returns a `Notification` object, this indicates that the request was a notification, 
-and, according to the JSON-RPC specification, no response should be sent. The transport implementation must choose how to handle this. 
+and, according to the json-RPC specification, no response should be sent. The transport implementation must choose how to handle this. 
 
 **Application Exceptions**
 
-For the JSON-RPC methods in server-side application code, all Exceptions have been explicitly caught by this implementation so that 
+For the json-RPC methods in server-side application code, all Exceptions have been explicitly caught by this implementation so that 
 the error may be sent on to the client. Any exception that is not TypeError or NoSuchMethodError will be returned, by default, as 
 RuntimeError, code -32000.  As a side-effect of the way that the Dispatcher detects InvalidParameters, TypeErrors in application code will
 return, by default, an InvalidParameters exception. It may be necessary to catch TypeErrors that may arise in your application code and 
@@ -192,9 +192,9 @@ To send meaningful exceptions and error codes to the client,
 
         import 'package:jsonrpc2/rpc_exceptions.dart' show RuntimeException;
 
-The RuntimeException constructor wants a message, a code and, optionally, JSON-serializable data . The message can be any String. 
+The RuntimeException constructor wants a message, a code and, optionally, json-serializable data . The message can be any String. 
 The code is an integer that is not in the range -32768 to -32000. For your application, you are free to create an API of error codes
-and messages that make sense for client error handling. RuntimeExceptions, when thrown in server-side JSON-RPC methods, behave just like 
+and messages that make sense for client error handling. RuntimeExceptions, when thrown in server-side json-RPC methods, behave just like 
 any other Exception, but they are transmitted, when thrown, to inform the client of application exceptions.
 
 
@@ -210,7 +210,7 @@ calling the method and returning the result or an error.
 
 **test\_jsonrpc2\_service.dart** 
 
-- tests the jsonRpc and jsonRpcExec functions. Both JSON-RPC 1.0 and JSON-RPC 2.0 specifications are exercised. Tests of the examples in the JSON-RPC 2.0
+- tests the jsonRpc and jsonRpcExec functions. Both json-RPC 1.0 and json-RPC 2.0 specifications are exercised. Tests of the examples in the json-RPC 2.0
 specification are specifically included.
 
 **rpc_methods.dart**

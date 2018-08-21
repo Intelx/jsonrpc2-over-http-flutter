@@ -13,7 +13,7 @@ class MyClass {
 
 void main() {
   ServerProxy proxy = new ServerProxy('http://127.0.0.1:8394/sum');
-  group('JSON-RPC', () {
+  group('json-RPC', () {
     test("positional arguments", () async {
       num result = await proxy.call('subtract', [23, 42]);
       expect(result, equals(-19));
@@ -58,7 +58,7 @@ void main() {
           result, equals('Îñţérñåţîöñåļîžåţîờñ Τη γλώσσα μου έδωσαν ελληνική'));
     });
 
-    test("not JSON-serializable", () async {
+    test("not json-serializable", () async {
       try {
         await proxy.call('subtract', [3, 0 / 0]);
       } catch (e) {
@@ -66,7 +66,7 @@ void main() {
       }
     });
 
-    test("class instance not JSON-serializable", () async {
+    test("class instance not json-serializable", () async {
       try {
         await proxy.call('subtract', [3, new MyClass()]);
       } catch (e) {

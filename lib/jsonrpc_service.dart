@@ -10,9 +10,9 @@ import 'dispatcher.dart';
 
 final _logger = new Logger('json-rpc');
 
-const String JSONRPC2 = '2.0';
-const String JSONRPC1 = '1.0';
-//ContentType JSON_RPC_CONTENT_TYPE = new ContentType('application', 'json', charset: "utf-8");
+const String jsonRPC2 = '2.0';
+const String jsonRPC1 = '1.0';
+//ContentType json_RPC_CONTENT_TYPE = new ContentType('application', 'json', charset: "utf-8");
 
 class Notification {}
 
@@ -24,15 +24,15 @@ class MethodRequest {
   get version {
     try {
       String version = request['jsonrpc'];
-      if (version == null) return JSONRPC1;
-      if (version != JSONRPC2) {
+      if (version == null) return jsonRPC1;
+      if (version != jsonRPC2) {
         throwError(new RpcException('Invalid request', -32600));
       }
       return version;
     } catch (e) {
       // we always get version first, so if request is not proper, fail here
       throw makeExceptionMap(
-          new RpcException('Invalid request', -32600), JSONRPC2, null);
+          new RpcException('Invalid request', -32600), jsonRPC2, null);
     }
   }
 
@@ -69,7 +69,7 @@ class MethodRequest {
   }
 }
 
-/* Given a parsed JSON-RPC request and an instance with methods,
+/* Given a parsed json-RPC request and an instance with methods,
  * return a Future with a Map of the result of the instance's method or a
  * Notification object
  */
@@ -92,10 +92,10 @@ jsonRpcDispatch(request, instance) {
       }
 
       Map resp = {'result': value, 'id': id};
-      if (version == JSONRPC2) {
+      if (version == jsonRPC2) {
         resp['jsonrpc'] = version;
       }
-      if (version == JSONRPC1) {
+      if (version == jsonRPC1) {
         resp['error'] = null;
       }
       return resp;
@@ -111,7 +111,7 @@ jsonRpcDispatch(request, instance) {
 
 makeExceptionMap(anException, version, [id = null]) {
   Map resp = {'id': id};
-  if (version == JSONRPC1) {
+  if (version == jsonRPC1) {
     resp['result'] = null;
   } else {
     resp['jsonrpc'] = version;
@@ -138,8 +138,8 @@ _shouldBatch(obj) {
   return true;
 }
 
-/* Given a JSON-RPC-formatted request string and an instance,
- * return a Future containing a JSON-RPC-formatted response string or null.
+/* Given a json-RPC-formatted request string and an instance,
+ * return a Future containing a json-RPC-formatted response string or null.
  * Null means that nothing should be returned, though some transports must return something.
 */
 jsonRpc(String request, Object instance) {
@@ -148,18 +148,18 @@ jsonRpc(String request, Object instance) {
     var parsed = parseJson(request);
     return jsonRpcExec(parsed, instance).then((resp) => encodeResponse(resp));
   } on RpcException catch (e) {
-    return new Future.sync(() => encodeResponse(makeExceptionMap(e, JSONRPC2)));
+    return new Future.sync(() => encodeResponse(makeExceptionMap(e, jsonRPC2)));
   }
 }
 
-/*  Given a proper parsed JSON-RPC Map or a List return the proper JSON-RPC Map or List of responses,
- *  or a Notification object. The transport will decide how to encode into JSON and UTF-8 for delivery.
+/*  Given a proper parsed json-RPC Map or a List return the proper json-RPC Map or List of responses,
+ *  or a Notification object. The transport will decide how to encode into json and UTF-8 for delivery.
  *  Depending on transport, Notification objects may not need
  *  to be delivered.
 */
 jsonRpcExec(request, Object instance) {
   if (request is Map &&
-      (request['jsonrpc'] == JSONRPC2 || request['jsonrpc'] == null)) {
+      (request['jsonrpc'] == jsonRPC2 || request['jsonrpc'] == null)) {
 //    _logger.fine('$request');
     return jsonRpcDispatch(request, instance);
   } else {
@@ -168,7 +168,7 @@ jsonRpcExec(request, Object instance) {
 
       for (var rpc in request) {
         if (rpc is Map) {
-          rpc['jsonrpc'] = JSONRPC2;
+          rpc['jsonrpc'] = jsonRPC2;
           dynamic value = jsonRpcDispatch(rpc, instance);
           responses.add(new Future(() => value));
         } else {
@@ -198,7 +198,7 @@ jsonRpcExec(request, Object instance) {
 
 parseJson(aString) {
   try {
-    var data = JSON.decode(aString);
+    var data = json.decode(aString);
     return data;
   } catch (e) {
     throw new RpcException("Parse error", -32700);
@@ -210,11 +210,11 @@ encodeResponse(response) {
     return null;
   }
   try {
-    return JSON.encode(response);
+    return json.encode(response);
   } catch (e) {
-    return JSON.encode(makeExceptionMap(
+    return json.encode(makeExceptionMap(
         new RpcException(
-            "Result was not JSON-serializable (${response['result']}).",
+            "Result was not json-serializable (${response['result']}).",
             -32601),
         "2.0",
         null));

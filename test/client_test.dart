@@ -13,7 +13,7 @@ class MyClass {
 dynamic proxy;
 void main() {
   proxy = new ServerProxy('http://127.0.0.1:8394/sum');
-  group('JSON-RPC', () {
+  group('json-RPC', () {
     test("positional arguments", () {
       proxy.call('subtract', [23, 42]).then((result) {
         expect(result, equals(-19));
@@ -62,11 +62,11 @@ void main() {
       });
     });
 
-    test("not JSON-serializable", () {
+    test("not json-serializable", () {
       expect(proxy.call('subtract', [3, 0 / 0]), throwsUnsupportedError);
     });
 
-    test("class instance not JSON-serializable", () {
+    test("class instance not json-serializable", () {
       expect(
           proxy.call('subtract', [3, new MyClass()]), throwsUnsupportedError);
     });

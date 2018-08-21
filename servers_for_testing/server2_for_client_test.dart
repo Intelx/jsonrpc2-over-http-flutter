@@ -37,7 +37,7 @@ main() {
           if (pathCheck == 'friend') {
             String friendName = request.uri.pathSegments[1];
             instance = new Friend(friendName);
-          } else{
+          } else {
             instance = new ExampleMethodsClass();
           }
 
@@ -51,7 +51,7 @@ main() {
             if (result is Notification) {
               response.write('');
             } else {
-              response.write(JSON.encode(result));
+              response.write(json.encode(result));
             }
             response.close();
           });

@@ -4,7 +4,7 @@ import "dart:async";
 import "rpc_exceptions.dart";
 //import "package:logging/logging.dart";
 
-//final _logger = new Logger('JSON-RPC');
+//final _logger = new Logger('json-RPC');
 //Logger.root.level = Level.ALL;
 //Logger.root.onRecord.listen(new LogPrintHandler());
 
@@ -17,7 +17,7 @@ import "rpc_exceptions.dart";
  *    request.then((returned)=>proxy.checkError(returned))
  *    .then((value){doSomethingWithValue(value);});
  *
- * Each arg must be representable in JSON.
+ * Each arg must be representable in json.
  *
  * Exceptions on the remote end will throw RemoteException.
  *
@@ -158,7 +158,7 @@ class JsonRpcMethod {
         break;
       case '1.0':
         if (args is Map)
-          throw new FormatException("Cannot use named params in JSON-RPC 1.0");
+          throw new FormatException("Cannot use named params in json-RPC 1.0");
         map = {
           'method': method,
           'params': (args is List) ? args : [args],

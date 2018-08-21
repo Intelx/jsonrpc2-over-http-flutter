@@ -23,12 +23,11 @@ void startServer() {
   print("Test Server running at http://${server.host}:${server.port}");
 }
 
-void doJsonRpc(Request request, dynamic instance) {
+void doJsonRpc(Request request, dynamic instance) async {
   request.response.type("application/json; charset=UTF-8");
-  UTF8
-      .decodeStream(request.input)
-      .then((String requestString) => jsonRpc(requestString, instance))
-      .then((String result) => request.response.send(result));
+  String requestString = await utf8.decodeStream(request.input);
+  String result = await jsonRpc(requestString, instance);
+  request.response.send(result);
 }
 
 class TestServer {

@@ -2,10 +2,10 @@
 library io_client_test;
 
 import 'package:test/test.dart';
-import 'package:jsonrpc2/jsonrpc_io_client.dart';
+import 'package:jsonrpc2flutter/jsonrpc_io_client.dart';
 
 import 'dart:async';
-import "package:jsonrpc2/src/classb.dart";
+import "package:jsonrpc2flutter/src/classb.dart";
 
 class MyClass {
   MyClass();

@@ -1,19 +1,8 @@
 name: jsonrpc2flutter
-version: 0.10.0+2
-author: Jim Washington <washington.jim@gmail.com>
-description: json-RPC (v2.0) utilities for web applications. It's like XML-RPC, for calling methods on a remote server, but using json.
-homepage: https://github.com/jwashin/jsonrpc2-dart
+version: 1.0.0
+author: Billy Lam <billylam.nz@gmail.com>
+description: Repackaged version of jsonrpc2-dart for flutter. Compatible with dart 2.0.
+homepage: https://github.com/Intelx/jsonrpc2-flutter
 environment:
-  sdk: "^2.0.0-dev"
+  sdk: '>=2.0.0 <3.0.0'
 
-dependencies:
-  logging:  ^0.11.0
-
-dev_dependencies:
-  http_server: any 
-  stream_channel: ^1.6.0 
-  test: any
-web:
-  compiler:
-    debug: dartdevc
- 
